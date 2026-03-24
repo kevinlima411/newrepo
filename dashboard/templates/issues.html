@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Issues — Kevin Bot{% endblock %}
+{% block content %}
+
+<div class="card">
+  <div class="card-title">Open Issues</div>
+  {% if not issues %}
+    <div class="empty">No open issues</div>
+  {% else %}
+    {% for issue in issues %}
+    <div class="issue-item">
+      <div class="issue-title">
+        <span style="color:var(--muted); font-size:12px;">#{{ issue.number }}</span>
+        {{ issue.title }}
+      </div>
+      <div class="issue-meta">
+        {{ issue.user.login }} · {{ issue.created_at[:10] }}
+        {% if issue.labels %}
+          {% for label in issue.labels %}
+            <span class="badge badge-muted" style="margin-left:4px;">{{ label.name }}</span>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+{% endblock %}

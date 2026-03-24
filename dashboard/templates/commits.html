@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Commits — Kevin Bot{% endblock %}
+{% block content %}
+
+<div class="card">
+  <div class="card-title">Commit History</div>
+  {% for c in commits %}
+  <div class="commit-item">
+    <div>
+      <div class="commit-sha">{{ c.sha[:7] }}</div>
+    </div>
+    <div style="flex:1;">
+      <div class="commit-msg">{{ c.commit.message.split('\n')[0] | truncate(70) }}</div>
+      <div class="commit-meta">{{ c.commit.author.name }} · {{ c.commit.author.date[:10] }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
