@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="theme-color" content="#0d1117">
+  <title>{% block title %}Kevin Bot{% endblock %}</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --green-dim: #1a4a24;
+      --blue: #58a6ff;
+      --yellow: #d29922;
+      --red: #f85149;
+      --accent: #238636;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 15px;
+      padding-bottom: 70px;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Header */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-title {
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--text);
+    }
+    .header-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Main content */
+    .main { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+    .badge-green { background: var(--green-dim); color: var(--green); }
+    .badge-muted { background: #21262d; color: var(--muted); }
+    .badge-yellow { background: #2d2a0e; color: var(--yellow); }
+
+    /* Agent grid */
+    .agent-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .agent-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .agent-card.active { border-color: var(--green); }
+    .agent-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+    .agent-domain { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .phase-tag { font-size: 11px; color: var(--muted); }
+
+    /* Commit list */
+    .commit-item {
+      display: flex;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .commit-item:last-child { border-bottom: none; }
+    .commit-sha {
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--blue);
+      min-width: 55px;
+    }
+    .commit-msg { font-size: 14px; flex: 1; word-break: break-word; }
+    .commit-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* File list */
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .file-item:last-child { border-bottom: none; }
+    .file-icon { font-size: 16px; min-width: 20px; }
+    .file-name { font-size: 14px; flex: 1; }
+    .file-size { font-size: 12px; color: var(--muted); }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+    .breadcrumb a { color: var(--blue); }
+    .breadcrumb span { color: var(--muted); }
+
+    /* File content */
+    .file-content {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-x: auto;
+    }
+
+    /* Form */
+    textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 12px;
+      resize: vertical;
+      min-height: 300px;
+    }
+    textarea:focus { outline: none; border-color: var(--blue); }
+    input[type="text"] {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 14px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+    input[type="text"]:focus { outline: none; border-color: var(--blue); }
+    .btn {
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-green { background: var(--accent); color: #fff; }
+    .btn-muted { background: #21262d; color: var(--text); border: 1px solid var(--border); }
+    label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 6px; margin-top: 12px; }
+
+    /* Flash messages */
+    .flash { padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; font-size: 14px; }
+    .flash-success { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+    .flash-error { background: #2d0f0f; color: var(--red); border: 1px solid var(--red); }
+
+    /* Bottom nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      height: 60px;
+      z-index: 100;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+      gap: 3px;
+      text-decoration: none;
+      transition: color 0.1s;
+    }
+    .nav-item.active { color: var(--blue); }
+    .nav-item:hover { color: var(--text); text-decoration: none; }
+    .nav-icon { font-size: 20px; }
+
+    /* Issues */
+    .issue-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .issue-item:last-child { border-bottom: none; }
+    .issue-title { font-size: 14px; margin-bottom: 3px; }
+    .issue-meta { font-size: 12px; color: var(--muted); }
+
+    /* Empty state */
+    .empty { text-align: center; color: var(--muted); padding: 30px 0; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="header-title">Kevin Bot</div>
+      <div class="header-sub">kevinlima411/newrepo</div>
+    </div>
+  </div>
+
+  <div class="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="flash flash-{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="{{ url_for('index') }}" class="nav-item {% if request.endpoint == 'index' %}active{% endif %}">
+      <span class="nav-icon">⌂</span>Home
+    </a>
+    <a href="{{ url_for('files') }}" class="nav-item {% if request.endpoint in ('files', 'file_edit') %}active{% endif %}">
+      <span class="nav-icon">◫</span>Files
+    </a>
+    <a href="{{ url_for('commits') }}" class="nav-item {% if request.endpoint == 'commits' %}active{% endif %}">
+      <span class="nav-icon">↻</span>Commits
+    </a>
+    <a href="{{ url_for('issues') }}" class="nav-item {% if request.endpoint == 'issues' %}active{% endif %}">
+      <span class="nav-icon">◎</span>Issues
+    </a>
+  </nav>
+</body>
+</html>

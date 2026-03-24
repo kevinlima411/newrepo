@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ file.name }} — Kevin Bot{% endblock %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+  <a href="{{ url_for('files') }}">root</a>
+  {% set parts = current_path.split('/') %}
+  {% for part in parts %}
+    <span>/</span>
+    {% if not loop.last %}
+      <a href="{{ url_for('files', filepath='/'.join(parts[:loop.index])) }}">{{ part }}</a>
+    {% else %}
+      <span>{{ part }}</span>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<!-- File header -->
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+  <div>
+    <div style="font-weight:600; font-size:16px;">{{ file.name }}</div>
+    <div style="font-size:12px; color:var(--muted);">{{ (file.size / 1024) | round(1) }}K · SHA {{ file.sha[:7] }}</div>
+  </div>
+  {% if file.name.endswith('.md') or file.name.endswith('.txt') or file.name.endswith('.py') %}
+  <a href="{{ url_for('file_edit', filepath=current_path) }}" class="btn btn-muted" style="font-size:13px; padding:8px 14px;">Edit</a>
+  {% endif %}
+</div>
+
+<div class="file-content">{{ content }}</div>
+
+{% endblock %}

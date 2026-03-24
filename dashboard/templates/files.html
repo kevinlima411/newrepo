@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Files — Kevin Bot{% endblock %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+  <a href="{{ url_for('files') }}">root</a>
+  {% if current_path %}
+    {% set parts = current_path.split('/') %}
+    {% for part in parts %}
+      <span>/</span>
+      {% if not loop.last %}
+        <a href="{{ url_for('files', filepath='/'.join(parts[:loop.index])) }}">{{ part }}</a>
+      {% else %}
+        <span>{{ part }}</span>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+</div>
+
+<div class="card">
+  {% if not items %}
+    <div class="empty">Empty directory</div>
+  {% else %}
+    {% for item in items %}
+    <div class="file-item">
+      <span class="file-icon">{% if item.type == 'dir' %}▶{% else %}◻{% endif %}</span>
+      <a href="{{ url_for('files', filepath=item.path) }}" class="file-name">{{ item.name }}</a>
+      {% if item.type == 'file' %}
+        <span class="file-size">{{ (item.size / 1024) | round(1) }}K</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+{% endblock %}

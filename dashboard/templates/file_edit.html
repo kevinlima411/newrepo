@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ file.name }} — Kevin Bot{% endblock %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+  <a href="{{ url_for('files') }}">root</a>
+  {% set parts = current_path.split('/') %}
+  {% for part in parts %}
+    <span>/</span>
+    {% if not loop.last %}
+      <a href="{{ url_for('files', filepath='/'.join(parts[:loop.index])) }}">{{ part }}</a>
+    {% else %}
+      <span>{{ part }}</span>
+    {% endif %}
+  {% endfor %}
+  <span>/ edit</span>
+</div>
+
+<form method="POST">
+  <input type="hidden" name="sha" value="{{ file.sha }}">
+
+  <label>Commit message</label>
+  <input type="text" name="message" placeholder="Update {{ file.name }} via dashboard">
+
+  <label>Content</label>
+  <textarea name="content" rows="20">{{ content }}</textarea>
+
+  <div style="display:flex; gap:10px; margin-top:14px;">
+    <button type="submit" class="btn btn-green">Save & Commit</button>
+    <a href="{{ url_for('files', filepath=current_path) }}" class="btn btn-muted">Cancel</a>
+  </div>
+</form>
+
+{% endblock %}
