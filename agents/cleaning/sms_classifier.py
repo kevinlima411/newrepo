@@ -12,7 +12,7 @@ import anthropic
 
 MODEL = "claude-haiku-4-5"
 CATEGORIES = ["reschedule", "complaint", "new_booking", "question", "other"]
-CONFIDENCE_THRESHOLD = 0.6  # below this → category "other" + flagged_for_review
+CONFIDENCE_THRESHOLD = 0.6  # below this → "other" + flagged_for_review (complaints excepted)
 HISTORY_WINDOW = 5          # last N thread messages sent as context
 
 SYSTEM_PROMPT = """You classify inbound SMS messages sent to DK Organizing & Cleaning, a home cleaning company.
@@ -87,7 +87,8 @@ def classify(message, thread_history=None, *, threshold=CONFIDENCE_THRESHOLD,
 
     Returns {"category", "confidence", "flagged_for_review"} plus "error"
     when the call failed, and "raw_category" when a low-confidence result
-    was overridden to "other".
+    was overridden to "other". Low-confidence complaints are NOT overridden:
+    they stay "complaint" (so escalation fires) with flagged_for_review=True.
     """
     if not message or not message.strip():
         return _fallback("empty message")
@@ -130,6 +131,10 @@ def classify(message, thread_history=None, *, threshold=CONFIDENCE_THRESHOLD,
     if category not in CATEGORIES:
         return _fallback(f"unknown category: {category}")
 
+    if confidence < threshold and category == "complaint":
+        # A missed complaint costs more than a false alarm: keep it routed to
+        # escalation, but flag it so a human double-checks.
+        return {"category": "complaint", "confidence": confidence, "flagged_for_review": True}
     if confidence < threshold:
         return {
             "category": "other",

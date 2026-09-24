@@ -47,8 +47,13 @@ def test_low_confidence_overrides_to_other_and_flags():
 
 
 def test_threshold_is_inclusive_and_configurable():
-    assert classify("x", client=reply("complaint", 0.6))["flagged_for_review"] is False
-    assert classify("x", client=reply("complaint", 0.7), threshold=0.8)["category"] == "other"
+    assert classify("x", client=reply("question", 0.6))["flagged_for_review"] is False
+    assert classify("x", client=reply("question", 0.7), threshold=0.8)["category"] == "other"
+
+
+def test_low_confidence_complaint_still_escalates():
+    result = classify("hmm the house smells kind of weird", client=reply("complaint", 0.45))
+    assert result == {"category": "complaint", "confidence": 0.45, "flagged_for_review": True}
 
 
 def test_confidence_clamped():

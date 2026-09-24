@@ -28,4 +28,4 @@ id,case_type,expected,message,history
 27,ambiguous,complaint|reschedule,You guys were late again last week. Can we do earlier this time?,
 28,ambiguous,question|new_booking,Do you have any openings next week?,
 29,ambiguous,question|reschedule,is it possible to switch to every 3 weeks?,
-30,ambiguous,complaint|other,hmm the house smells kind of weird,
+30,ambiguous,complaint,hmm the house smells kind of weird,

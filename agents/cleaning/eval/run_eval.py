@@ -34,7 +34,7 @@ def main():
     rows = list(csv.DictReader(open(args.csv, newline="", encoding="utf-8")))
     per_cat = defaultdict(lambda: [0, 0])   # expected category -> [correct, total]
     per_case = defaultdict(lambda: [0, 0])  # case_type -> [correct, total]
-    results, misses, missed_complaints = [], [], []
+    results, misses, missed_complaints, flagged_complaints = [], [], [], []
 
     for row in rows:
         history = json.loads(row["history"]) if row.get("history") else []
@@ -45,6 +45,8 @@ def main():
         for bucket in (per_cat[expected[0]], per_case[row.get("case_type", "all")]):
             bucket[0] += ok
             bucket[1] += 1
+        if result["category"] == "complaint" and result["flagged_for_review"]:
+            flagged_complaints.append((row, result))
         if not ok:
             misses.append((row, result))
             if "complaint" in expected:
@@ -63,6 +65,10 @@ def main():
     flagged = sum(r["result"]["flagged_for_review"] for r in results)
     errors = sum("error" in r["result"] for r in results)
     print(f"\nFlagged for review: {flagged}   API/parse errors: {errors}")
+    if flagged_complaints:
+        print("\nLow-confidence complaints (escalated anyway, flagged):")
+        for row, res in flagged_complaints:
+            print(f"  #{row['id']} @ {res['confidence']:.2f} expected {row['expected']} | {row['message']}")
     if missed_complaints:
         print(f"!! Missed complaints (worst failure): ids {', '.join(missed_complaints)}")
     if misses:
