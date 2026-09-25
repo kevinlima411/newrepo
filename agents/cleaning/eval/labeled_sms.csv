@@ -1,0 +1,31 @@
+id,case_type,expected,message,history
+1,clear,reschedule,can we do thursday instead,
+2,clear,reschedule,I need to cancel tomorrow's cleaning my kid is sick,
+3,clear,reschedule,Could you guys come at 1 instead of 10 on Friday?,
+4,clear,reschedule,Need to push next week's appointment back a week,
+5,clear,complaint,the bathroom wasn't even touched,
+6,clear,complaint,Nobody showed up today and nobody called me. Not okay,
+7,clear,complaint,I was charged twice this month,
+8,clear,complaint,The cleaner was on her phone the whole time and left early,
+9,clear,new_booking,hi do you guys clean airbnbs,
+10,clear,new_booking,Looking to set up biweekly cleaning for a 3 bed 2 bath,
+11,clear,new_booking,Can I book a move-out clean for the 30th?,
+12,clear,new_booking,My neighbor recommended you. I'd like to get on your schedule,
+13,clear,question,do you bring your own supplies,
+14,clear,question,How much for a deep clean?,
+15,clear,question,Are your cleaners insured?,
+16,clear,question,Do you do inside the fridge and oven?,
+17,clear,other,Thank you so much!!,
+18,clear,other,Great job today the house looks amazing,
+19,low_signal,other,ok,
+20,low_signal,other,👍,
+21,low_signal,other,thanks,
+22,low_signal,other,k,
+23,history,reschedule,yes that works,"[{""role"": ""client"", ""text"": ""Can we move Friday?""}, {""role"": ""dk"", ""text"": ""Sure! Would Monday at 9 work?""}]"
+24,history,new_booking,yes that works,"[{""role"": ""client"", ""text"": ""Hi I'd like a quote for a deep clean""}, {""role"": ""dk"", ""text"": ""It's $280 for your size home. Want us to book you for Tuesday the 14th?""}]"
+25,history,complaint,still nothing?,"[{""role"": ""client"", ""text"": ""The kitchen floor was left sticky can someone come back""}, {""role"": ""dk"", ""text"": ""So sorry! We'll get back to you shortly.""}]"
+26,history,other,perfect thanks,"[{""role"": ""client"", ""text"": ""What time are you coming tomorrow?""}, {""role"": ""dk"", ""text"": ""Between 9 and 10am!""}]"
+27,ambiguous,complaint|reschedule,You guys were late again last week. Can we do earlier this time?,
+28,ambiguous,question|new_booking,Do you have any openings next week?,
+29,ambiguous,question|reschedule,is it possible to switch to every 3 weeks?,
+30,ambiguous,complaint,hmm the house smells kind of weird,
